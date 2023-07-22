@@ -1,0 +1,15 @@
+{
+    "requires": ["bare-metal"],
+    "macros": [
+	"MBED_TICKLESS"
+    ],
+    "target_overrides": {
+        "*": {
+			"platform.heap-stats-enabled": false,
+			"platform.stack-stats-enabled": false,
+			"drivers.uart-serial-rxbuf-size": 48,
+			"drivers.uart-serial-txbuf-size": 48
+        }
+    }
+}
+
