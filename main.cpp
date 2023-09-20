@@ -57,9 +57,15 @@ struct single_thread_raster{
 			next_run = abmt::time::now() + raster->interval;
 		}else{
 			abmt::time sleep_time = raster->poll();
-			if(sleep_time > 0){
-				next_run = abmt::time::now() + sleep_time;
-				return ;
+			if (sleep_time > 0) {
+				if(sleep_time > 1){
+					next_run = abmt::time::now() + sleep_time;
+				}else{
+					// ignore next_run-update when the next poll should occur
+					// in one nanosecond. This improves latency for platforms
+					// with low clock resolution.
+				}
+				return;
 			}
 		}
 		if(init_tick_executed){
@@ -159,7 +165,7 @@ int main()
 				out.flush();
 				adapter.clear_daq_lists();
 				abmt::log_err("Error: Data in outbuffer can't be send in 0.1s.");
-				abmt::log_err("Datatransmission stopped. Reduce viewed signals...");
+				abmt::log_err("Data transmission stopped. Reduce viewed signals...");
 			}
 		}
     }
