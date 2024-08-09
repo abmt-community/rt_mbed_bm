@@ -18,13 +18,11 @@ model_adatper_std adapter;
 void abmt::log(std::string s){
 	adapter.log(s);
 }
-void abmt::log_err(std::string s){
-	adapter.log_err(s);
-}
+
 void abmt::die(std::string s){
-	abmt::log_err("Fatal Error:");
-	abmt::log_err(s);
-	abmt::log_err("Reset!");
+	abmt::log("Fatal Error:");
+	abmt::log(s);
+	abmt::log("Reset!");
 	ThisThread::sleep_for(std::chrono::milliseconds(5));
 	NVIC_SystemReset();
 }
@@ -107,7 +105,6 @@ int main()
 	bool nothing_done = false;
 	abmt::time last_online_send = abmt::time::now();
 	abmt::time sleep_until = abmt::time::now();
-
 	while(1) {
 
 		if(nothing_done){
@@ -122,7 +119,7 @@ int main()
 		}
 		nothing_done = true;
 
-		sleep_until = abmt::time::now() + abmt::time::sec(1);
+		sleep_until = abmt::time::now() + abmt::time::sec(1000);
 		for(size_t raster_index = 0; raster_index < mdl_ptr->rasters.length; raster_index++){
 			auto next_run = raster_array[raster_index]->next_run;
 			if(next_run <= abmt::time::now()){
@@ -164,8 +161,8 @@ int main()
 				nothing_done = false;
 				out.flush();
 				adapter.clear_daq_lists();
-				abmt::log_err("Error: Data in outbuffer can't be send in 0.1s.");
-				abmt::log_err("Data transmission stopped. Reduce viewed signals...");
+				abmt::log("Error: Data in outbuffer can't be send in 0.1s.");
+				abmt::log("Data transmission stopped. Reduce viewed signals...");
 			}
 		}
     }
